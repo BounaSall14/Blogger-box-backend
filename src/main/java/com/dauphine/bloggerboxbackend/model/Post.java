@@ -1,13 +1,31 @@
 package com.dauphine.bloggerboxbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "post")
 public class Post {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
+
+    @Column(name = "title", nullable = false, length = 500)
     private String title;
+
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     public Post() {}

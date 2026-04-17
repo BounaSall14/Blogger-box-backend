@@ -1,9 +1,18 @@
 package com.dauphine.bloggerboxbackend.model;
 
+import jakarta.persistence.*;
 import java.util.UUID;
 
+@Entity
+@Table(name = "category")
 public class Category {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
+
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
     public Category() {}
