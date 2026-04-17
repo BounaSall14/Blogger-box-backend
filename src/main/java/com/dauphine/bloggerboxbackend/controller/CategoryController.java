@@ -7,6 +7,8 @@ import com.dauphine.bloggerboxbackend.service.CategoryService;
 import com.dauphine.bloggerboxbackend.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,38 +28,39 @@ public class CategoryController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all categories")
-    public List<Category> getAll() {
-        return categoryService.getAll();
+    @Operation(summary = "Get all categories, optionally filtered by name")
+    public ResponseEntity<List<Category>> getAll(@RequestParam(required = false) String name) {
+        return ResponseEntity.ok(categoryService.getAll(name));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a category by id")
-    public Category getById(@PathVariable UUID id) {
-        return categoryService.getById(id);
+    public ResponseEntity<Category> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(categoryService.getById(id));
     }
 
     @PostMapping
     @Operation(summary = "Create a new category")
-    public Category create(@RequestBody CreateCategoryRequest request) {
-        return categoryService.create(request.getName());
+    public ResponseEntity<Category> create(@RequestBody CreateCategoryRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(request.getName()));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a category name")
-    public Category update(@PathVariable UUID id, @RequestBody CreateCategoryRequest request) {
-        return categoryService.update(id, request.getName());
+    public ResponseEntity<Category> update(@PathVariable UUID id, @RequestBody CreateCategoryRequest request) {
+        return ResponseEntity.ok(categoryService.update(id, request.getName()));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a category")
-    public void delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         categoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/posts")
     @Operation(summary = "Get all posts of a category")
-    public List<Post> getPostsByCategory(@PathVariable UUID id) {
-        return postService.getByCategoryId(id);
+    public ResponseEntity<List<Post>> getPostsByCategory(@PathVariable UUID id) {
+        return ResponseEntity.ok(postService.getByCategoryId(id));
     }
 }
